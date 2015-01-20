@@ -40,8 +40,8 @@ static void disc_init(Disc *disc) {
   disc->pos.y = frame.size.h/2;
   disc->vel.x = 0;
   disc->vel.y = 0;
-  disc->radius = next_radius;
-  disc->mass = disc_calc_mass(disc);
+  disc->radius = 3;
+  disc->mass = disc_calc_mass(disc) + next_radius;
   next_radius += 0.5;
 }
 
