@@ -3,14 +3,14 @@
     "capabilities": [
         ""
     ],
-    "companyName": "maddyvarner@gmail.com",
-    "longName": "clock",
+    "companyName": "t.langerak@student.tue.nl",
+    "longName": "Watch",
     "projectType": "native",
     "resources": {
         "media": []
     },
-    "shortName": "clock",
-    "uuid": "1ad2613f-a20a-42dc-87c2-8fa9273496e6",
+    "shortName": "Watch",
+    "uuid": "45087c85-36cb-43ff-a3f5-32ec8406f6a5",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
