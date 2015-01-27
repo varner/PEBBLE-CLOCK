@@ -9,6 +9,8 @@
 //declare variable, use local time.  
 int tt;
 bool min = true;
+int minutes;
+int hours;
 
 typedef struct Vec2d {
   double x;
@@ -95,8 +97,10 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   int new_rad;
   if (min == true) {
     new_rad = 2;
+    tt = minutes;
   } else {
     new_rad = 10;
+    tt = hours;
   }
   
   for (int i = 0; i < NUM_DISCS; i++) {
@@ -146,10 +150,12 @@ static void update_time() {
   time_t temp = time(NULL); 
   struct tm *tm;
   tm=localtime(&temp);
+  minutes = tm->tm_min;
+  hours = tm->tm_hour;
   if (min == true) { 
-    tt=tm->tm_min;
+    tt=minutes;
   } else {
-    tt=tm->tm_hour;
+    tt=hours;
   }
   // this is for testing collisions lol
  // tt=50;
