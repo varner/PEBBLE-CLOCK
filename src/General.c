@@ -23,7 +23,8 @@ typedef struct Disc {
 
 static Disc discs[NUM_DISCS];
 
-static double next_radius = 3;
+static double next_radius = 10;
+static double count = 0;
 
 static Window *window;
 
@@ -43,9 +44,10 @@ static void disc_init(Disc *disc) {
   disc->pos.y = frame.size.h/2;
   disc->vel.x = 0;
   disc->vel.y = 0;
-  disc->radius = 3;
+  disc->radius = 2;
   disc->mass = disc_calc_mass(disc) + next_radius;
   next_radius += 0.5;
+  count++;
 }
 
 static void disc_apply_force(Disc *disc, Vec2d force) {
@@ -86,14 +88,29 @@ static void disc_layer_update_callback(Layer *me, GContext *ctx) {
   }
 }
 
+static bool disc_check_collisions(Disc *disc, Disc *disc_2) {
+  double dx = disc_2->pos.x - disc->pos.x;
+  double dy = disc_2->pos.y - disc->pos.y;
+  double change = (dx * dx) + (dy * dy);
+  if (change < 20) return true;
+  return false;
+}
+
 static void timer_callback(void *data) {
   AccelData accel = (AccelData) { .x = 0, .y = 0, .z = 0 };
 
   accel_service_peek(&accel);
-
-  for (int i = 0; i < NUM_DISCS; i++) {
+  
+  for (int i = 0; i < tt; i++) {
     Disc *disc = &discs[i];
     disc_apply_accel(disc, accel);
+    for (int j = i + 1; j < tt; j++) {
+      Disc *disc_2 = &discs[j];
+      if (disc_check_collisions(disc, disc_2)) {
+        disc->pos.x -= disc->vel.x;
+        disc->pos.x -= disc->vel.y;
+      }
+    }
     disc_update(disc);
   }
 
@@ -108,6 +125,8 @@ static void update_time() {
   struct tm *tm;
   tm=localtime(&temp);
   tt=tm->tm_min;
+  // this is for testing collisions lol
+ // tt=50;
 }
 
 
