@@ -201,7 +201,7 @@ static void init(void) {
 
 static void deinit(void) {
   accel_data_service_unsubscribe();
-
+  tick_timer_service_unsubscribe();
   window_destroy(window);
 }
 
