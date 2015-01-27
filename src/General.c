@@ -8,6 +8,7 @@
   
 //declare variable, use local time.  
 int tt;
+bool min = true;
 
 typedef struct Vec2d {
   double x;
@@ -88,11 +89,32 @@ static void disc_layer_update_callback(Layer *me, GContext *ctx) {
   }
 }
 
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+ // text_layer_set_text(s_output_layer, "Up pressed!");
+  min = !min;
+  int new_rad;
+  if (min == true) {
+    new_rad = 2;
+  } else {
+    new_rad = 10;
+  }
+  
+  for (int i = 0; i < NUM_DISCS; i++) {
+    Disc *disc = &discs[i];
+    disc->radius = new_rad;
+  }
+}
+
+static void click_config_provider(void *context) {
+  // Register the ClickHandlers
+  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
+}
+
 static bool disc_check_collisions(Disc *disc, Disc *disc_2) {
   double dx = disc_2->pos.x - disc->pos.x;
   double dy = disc_2->pos.y - disc->pos.y;
   double change = (dx * dx) + (dy * dy);
-  if (change < 20) return true;
+  if (change < disc->radius * disc->radius) return true;
   return false;
 }
 
@@ -124,7 +146,11 @@ static void update_time() {
   time_t temp = time(NULL); 
   struct tm *tm;
   tm=localtime(&temp);
-  tt=tm->tm_min;
+  if (min == true) { 
+    tt=tm->tm_min;
+  } else {
+    tt=tm->tm_hour;
+  }
   // this is for testing collisions lol
  // tt=50;
 }
@@ -159,6 +185,8 @@ static void init(void) {
   });
   window_stack_push(window, true /* Animated */);
   window_set_background_color(window, GColorBlack);
+  
+  window_set_click_config_provider(window, click_config_provider);
 
   accel_data_service_subscribe(0, NULL);
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
